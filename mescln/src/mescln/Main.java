@@ -1,25 +1,17 @@
 package mescln;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.SwingConstants;
-
-import mescln.Main.eHandler;
 
 import javax.swing.JButton;
 
@@ -52,25 +44,36 @@ public class Main extends JFrame {
 	}
 	
 	public class Connection implements Runnable {
+		Socket socket;
 
 		@Override
 		public void run() {
 			try {
-				Socket socket = new Socket(InetAddress.getByName("127.0.0.1"), 2345);
+				socket = new Socket(InetAddress.getByName("127.0.0.1"), 2345);
 				System.out.println("Socket: "+socket);
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			    PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-			    out.println(txtfld.getText());
-		        String str = in.readLine();
+				ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+			    out.writeObject(txtfld.getText());
+		        String str = (String)in.readObject();
 		        System.out.println(str); 
-			} catch (Exception e) {System.out.println("Communication error: "+e);}
+			} catch (Exception e) {
+				System.out.println("Communication error: "+e);
+			}
+			finally {
+				try {
+					socket.close();
+					System.out.println("Closed socket: "+socket);
+				} catch (IOException e) {
+					System.out.println("Error closing socket"+e);
+				}
+			}
 			
 		}
 		
 	}
 
 	public static void main(String[] args) throws IOException {
-		Main window = new Main();
+		new Main();
 		
 	}
 
