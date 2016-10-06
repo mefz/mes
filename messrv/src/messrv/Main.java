@@ -22,11 +22,15 @@ public class Main {
 		PrintWriter out = new PrintWriter(new BufferedWriter(
                 new OutputStreamWriter(socket.getOutputStream())), true);
 		while (true) {
-            String str = in.readLine();
-            if (str.equals("END"))
-               break;
-            System.out.println("Echoing: " + str);
-            out.println(str);
+            try {
+				String str = in.readLine();
+				if (str.equals("END"))
+				   break;
+				System.out.println("Echoing: " + str);
+				out.println(str);
+			} catch (Exception e) {
+				System.out.println("Communication to client error:"+e);
+			}
          }
 	}
 
