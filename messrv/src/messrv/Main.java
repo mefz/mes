@@ -23,7 +23,7 @@ public class Main extends Thread {
 				input = new ObjectInputStream(socket.getInputStream());
 			  	String str = (String)input.readObject();
 			    output.flush();
-			    output.writeObject(str);
+			    output.writeObject("got "+str);
 		} catch (IOException | ClassNotFoundException e) {
 			System.out.println(e);
 		} 
