@@ -20,7 +20,7 @@ public class Main extends JFrame {
 	
 	JTextField txtfld = new JTextField(25);
 	JButton button = new JButton("Send");
-	JTextArea tarea = new JTextArea(7,31);
+	JTextArea tarea = new JTextArea(7,30);
 	JScrollPane scroll = new JScrollPane(tarea);
 	eHandler handler = new eHandler();
 

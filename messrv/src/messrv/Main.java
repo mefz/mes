@@ -39,8 +39,18 @@ public class Main extends Thread {
 		
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {		
 		ServerSocket s = new ServerSocket(2345, 5);
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				try {
+					s.close();
+				} catch (IOException e) {
+					System.out.println("Can not close socket:"+e);
+				}
+				System.out.println("server terminated");
+				} 
+});
 		System.out.println("Listening to: "+s);			
 		while (true) {
 			Socket socket = s.accept();
