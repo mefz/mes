@@ -65,8 +65,6 @@ public class Main extends JFrame {
 			}			
 		});
 		
-		menuItem.setText("Copy");
-		menuItem.setMnemonic(KeyEvent.VK_C);
 	}
 	
 	public class eHandler implements ActionListener {
@@ -84,11 +82,11 @@ public class Main extends JFrame {
 		if (txtfld.getText().equals("exit")){
 			System.exit(0);
 		} else if (txtfld.getText().equals("cls")){
-			tarea.setText(null);		
+			tarea.setText(null);
+			txtfld.setText(null);
 		} else {
 			new Thread(new Connection()).start();
 		}
-		txtfld.setText(null);
 	}
 	
 	public class Connection implements Runnable {
@@ -102,25 +100,26 @@ public class Main extends JFrame {
 				ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			    out.writeObject(txtfld.getText());
+			    System.out.println("Sent: "+txtfld.getText());
 		        String str =(String)in.readObject();
+		        System.out.println("Received: "+str);
 		        addLine(str);
 			} catch (Exception e) {
 				System.out.println("Communication error: "+e.getMessage());
 				addLine("Connection failed");
-			}
-			finally {
-				try {
+			} finally {
+				txtfld.setText(null);
+				try {					
 					socket.close();
 					System.out.println("Closed socket: "+socket);
-				} catch (IOException e) {
-					System.out.println("Error closing socket"+e);
-				}
+				} catch (NullPointerException | IOException e) {
+					System.out.println("Error closing socket "+e);
+				}	
 			}
 			
 		}
 		
 		public void addLine(String newLine) {
-			System.out.println(tarea.getCaretPosition());
 			if (tarea.getCaretPosition()!=0) {
 				tarea.append("\n");
 			}

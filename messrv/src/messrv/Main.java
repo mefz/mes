@@ -47,7 +47,7 @@ public class Main extends Thread {
 			output.writeObject("got Empty");
 			return;
 		}
-		if (in.equals("exit")) {
+		if (in.equals("srv.exit")) {
 			output.writeObject("terminating server");
 			System.exit(0);
 		}
@@ -66,10 +66,14 @@ public class Main extends Thread {
 				} 
 });
 		System.out.println("Listening to: "+s);			
-		while (true) {
-			Socket socket = s.accept();
-			System.out.println("Connection accepted: "+socket);
-            new Main(socket);
+		while (!s.isClosed()) {
+			try {
+				Socket socket = s.accept();
+				System.out.println("Connection accepted: "+socket);
+				new Main(socket);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
          }
 	}
 
