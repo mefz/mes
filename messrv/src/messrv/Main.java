@@ -22,8 +22,7 @@ public class Main extends Thread {
 				output = new ObjectOutputStream(socket.getOutputStream());
 				input = new ObjectInputStream(socket.getInputStream());
 			  	String str = (String)input.readObject();
-			    output.flush();
-			    output.writeObject("got "+str);
+			    IO(str);
 		} catch (IOException | ClassNotFoundException e) {
 			System.out.println(e);
 		} 
@@ -37,6 +36,21 @@ public class Main extends Thread {
 		}
 		
 		
+	}
+	
+	public void IO(String in) throws IOException {
+		output.flush();
+		System.out.println("Incoming: "+in);
+		if (!in.trim().isEmpty()) {
+			output.writeObject("got "+in);
+		} else {
+			output.writeObject("got Empty");
+			return;
+		}
+		if (in.equals("exit")) {
+			output.writeObject("terminating server");
+			System.exit(0);
+		}
 	}
 
 	public static void main(String[] args) throws IOException {		

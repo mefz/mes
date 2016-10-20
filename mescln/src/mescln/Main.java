@@ -3,18 +3,22 @@ package mescln;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.text.DefaultEditorKit;
 
 public class Main extends JFrame {
 	
@@ -23,6 +27,7 @@ public class Main extends JFrame {
 	JTextArea tarea = new JTextArea(7,30);
 	JScrollPane scroll = new JScrollPane(tarea);
 	eHandler handler = new eHandler();
+	JMenuItem menuItem = new JMenuItem(new DefaultEditorKit.CopyAction());
 
 	public Main() {
 		setLayout(new FlowLayout());
@@ -33,9 +38,12 @@ public class Main extends JFrame {
 		this.add(button);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		tarea.setEditable(false);
+		tarea.setLineWrap(true);
 		this.add(scroll);
 		setVisible(true);
-		button.addActionListener(handler);
+		button.addActionListener(handler);		
+		menuItem.setText("Copy");
+		menuItem.setMnemonic(KeyEvent.VK_C);
 	}
 	
 	public class eHandler implements ActionListener {
@@ -60,11 +68,11 @@ public class Main extends JFrame {
 				ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 			    out.writeObject(txtfld.getText());
-		        String str =(String)in.readObject()+"\n";
-		        tarea.setText(tarea.getText()+str);
+		        String str =(String)in.readObject();
+		        addLine(str);
 			} catch (Exception e) {
 				System.out.println("Communication error: "+e.getMessage());
-				tarea.setText("Connection failed");
+				addLine("Connection failed");
 			}
 			finally {
 				try {
@@ -75,6 +83,15 @@ public class Main extends JFrame {
 				}
 			}
 			
+		}
+		
+		public void addLine(String newLine) {
+			System.out.println(tarea.getCaretPosition());
+			if (tarea.getCaretPosition()!=0) {
+				tarea.append("\n");
+			}
+			tarea.append(newLine);
+			tarea.setCaretPosition(tarea.getDocument().getLength());
 		}
 		
 	}
