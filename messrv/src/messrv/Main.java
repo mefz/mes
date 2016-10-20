@@ -60,7 +60,7 @@ public class Main extends Thread {
 				try {
 					s.close();
 				} catch (IOException e) {
-					System.out.println("Can not close socket:"+e);
+					System.out.println("Can't close socket:"+e.getMessage());
 				}
 				System.out.println("server terminated");
 				} 

@@ -4,13 +4,13 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -34,6 +34,8 @@ public class Main extends JFrame {
 		setSize(400,200);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+		setResizable(false);
+		setTitle("MEScln");
 		this.add(txtfld);
 		this.add(button);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -41,7 +43,28 @@ public class Main extends JFrame {
 		tarea.setLineWrap(true);
 		this.add(scroll);
 		setVisible(true);
-		button.addActionListener(handler);		
+		button.addActionListener(handler);
+		
+		txtfld.addKeyListener(new KeyListener(){
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyChar() == KeyEvent.VK_ENTER){
+					preSend();
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}			
+		});
+		
 		menuItem.setText("Copy");
 		menuItem.setMnemonic(KeyEvent.VK_C);
 	}
@@ -50,11 +73,22 @@ public class Main extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource()==button) {
 				System.out.println("Button pressed");
-				new Thread(new Connection()).start();
+				preSend();
 			}
 			
 		}
 		
+	}
+	
+	public void preSend(){		
+		if (txtfld.getText().equals("exit")){
+			System.exit(0);
+		} else if (txtfld.getText().equals("cls")){
+			tarea.setText(null);		
+		} else {
+			new Thread(new Connection()).start();
+		}
+		txtfld.setText(null);
 	}
 	
 	public class Connection implements Runnable {
