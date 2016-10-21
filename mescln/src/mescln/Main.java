@@ -13,12 +13,10 @@ import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.text.DefaultEditorKit;
 
 public class Main extends JFrame {
 	
@@ -27,7 +25,6 @@ public class Main extends JFrame {
 	JTextArea tarea = new JTextArea(7,30);
 	JScrollPane scroll = new JScrollPane(tarea);
 	eHandler handler = new eHandler();
-	JMenuItem menuItem = new JMenuItem(new DefaultEditorKit.CopyAction());
 
 	public Main() {
 		setLayout(new FlowLayout());
