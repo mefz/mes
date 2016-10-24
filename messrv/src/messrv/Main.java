@@ -12,18 +12,19 @@ public class Main extends Thread {
 	ObjectInputStream input;
 	ObjectOutputStream output;
 	Object obj;
+	static Stat stat;
 	
 	public Main(Socket s) throws IOException {
-		socket = s;
+		socket = s;		
 		start();
 	}
 	public synchronized void run() {		
 		try {
 				output = new ObjectOutputStream(socket.getOutputStream());
 				input = new ObjectInputStream(socket.getInputStream());
-			  	String str = (String)input.readObject();
+			  	String str = (String)input.readObject();	
+			  	stat.lmodel.addElement(currentThread().getName());
 			    IO(str);
-			    //System.out.println(Thread.currentThread().getName()+".Exchange: "+str);
 		} catch (IOException | ClassNotFoundException e) {
 			System.out.println(e);
 		} 
@@ -54,9 +55,10 @@ public class Main extends Thread {
 		}
 	}
 
-	public static void main(String[] args) throws IOException {		
-		new Stat();
+	public static void main(String[] args) throws IOException {	
+		stat = new Stat();
 		ServerSocket s = new ServerSocket(2345, 5);
+		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				try {

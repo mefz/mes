@@ -21,9 +21,10 @@ public class Stat extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
-		setTitle("MESsrv");
-		add(list);
-		list.setPreferredSize(new Dimension(390,160));
+		setTitle("MESsrv");	
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		add(scroll);
+		scroll.setPreferredSize(new Dimension(390,160));
 		setVisible(true);
 	}
 
