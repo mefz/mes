@@ -5,6 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 
 public class Main extends Thread {
@@ -45,6 +50,24 @@ public class Main extends Thread {
 		System.out.println("Incoming: "+in);
 		if (!in.trim().isEmpty()) {
 			output.writeObject("got "+in);
+			
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con = DriverManager.getConnection("jdbc:mysql://192.168.1.120:3306/mes", "remote", "lcd");
+				Statement stm = con.createStatement();
+				String statement = "INSERT INTO tab (mes) VALUES ('"+in+"')";
+				stm.executeUpdate(statement);
+				ResultSet res = stm.executeQuery("SELECT * FROM tab");
+				while (res.next()) {
+					System.out.println("DB>"+res.getString(2));
+				}
+				res.close();
+				stm.close();
+				con.close();
+			} catch (Exception e) {
+				System.out.println("IO:MySQL error."+e);
+			}	
+			
 		} else {
 			output.writeObject("got Empty");
 			return;
