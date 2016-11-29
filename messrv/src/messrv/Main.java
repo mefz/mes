@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -55,9 +56,18 @@ public class Main extends Thread {
 				Class.forName("com.mysql.jdbc.Driver");
 				Connection con = DriverManager.getConnection("jdbc:mysql://192.168.1.120:3306/mes", "remote", "lcd");
 				Statement stm = con.createStatement();
-				String statement = "INSERT INTO tab (mes) VALUES ('"+in+"')";
-				stm.executeUpdate(statement);
-				ResultSet res = stm.executeQuery("SELECT * FROM tab");
+				ResultSet res = stm.executeQuery("SELECT MAX(id) FROM tab");
+				res.first();
+				//System.out.println("DB>"+res.getInt(1));
+				Integer MesNumber = res.getInt(1)+1; 
+				String prepMesInsStatement = "INSERT INTO tab (id,mes) VALUES (?, ?)";
+				PreparedStatement pstm = con.prepareStatement(prepMesInsStatement);
+				pstm.setInt(1, MesNumber);
+				pstm.setString(2, in);
+				pstm.executeUpdate();
+				//String statement = "INSERT INTO tab (id,mes) VALUES ('"+MesNumber+","+in+"')";
+				//stm.executeUpdate(statement);
+				res = stm.executeQuery("SELECT * FROM tab");
 				while (res.next()) {
 					System.out.println("DB>"+res.getString(2));
 				}
